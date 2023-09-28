@@ -26,6 +26,10 @@ const config: Config = {
         'red-light': '#F77070',
         'red-dark': '#AB3030',
       },
+      boxShadow: {
+        container:
+          '0px 6px 12px 0px rgba(0, 0, 0, 0.25), 0px 4px 4px 0px rgba(0, 0, 0, 0.25)',
+      },
     },
   },
   plugins: [],
