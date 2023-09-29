@@ -1,4 +1,10 @@
-export type Json = string | null | { [key: string]: Json | undefined } | Json[]
+interface ObjectIncorrectAnswers {
+  answers_a: string
+  answers_b: string
+  answers_c: string
+}
+
+export type Json = ObjectIncorrectAnswers | null
 
 export interface Database {
   public: {
@@ -8,21 +14,21 @@ export interface Database {
           corret_answers: string | null
           created_at: string
           id: string
-          incorrect_answers: string[] | null
+          incorrect_answers: Json | null
           question: string | null
         }
         Insert: {
           corret_answers?: string | null
           created_at?: string
           id?: string
-          incorrect_answers?: string[] | null
+          incorrect_answers?: Json | null
           question?: string | null
         }
         Update: {
           corret_answers?: string | null
           created_at?: string
           id?: string
-          incorrect_answers?: string[] | null
+          incorrect_answers?: Json | null
           question?: string | null
         }
         Relationships: []
