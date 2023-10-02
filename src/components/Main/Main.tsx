@@ -15,9 +15,26 @@ interface Questions {
 }
 
 export function Main() {
+  const [allQuestions, setAllQuestions] = useState<Array<Questions> | null>([])
   const [questions, setQuestions] = useState<Array<Questions> | null>([])
-  const [page, setPage] = useState(2)
+  const [answersCorrect, setAnswersCorrect] = useState(0)
+  const [numberQuestions, setNumberQuestions] = useState(1)
+
+  const [page, setPage] = useState(1)
   const [perPage, setPerPage] = useState(1)
+
+  const [disabled, setDisabled] = useState(true)
+
+  const handleCorrectAnswer = (answers: string | undefined) => {
+    const answersIsCorrect = questions?.map((question) => {
+      return question.corret_answers === answers
+    })
+
+    if (answersIsCorrect) {
+      setDisabled(false)
+      setAnswersCorrect(answersCorrect + 1)
+    }
+  }
 
   useEffect(() => {
     const fetchQuestions = async () => {
@@ -29,6 +46,13 @@ export function Main() {
       setQuestions(data)
     }
 
+    const fetchAllQuestions = async () => {
+      const { data } = await supabase.from('Questions').select('*')
+
+      setAllQuestions(data)
+    }
+
+    fetchAllQuestions()
     fetchQuestions()
   }, [page, perPage])
 
@@ -42,11 +66,11 @@ export function Main() {
           <div className="px-5 py-3 flex justify-center items-center gap-[0.375rem] rounded-lg border border-green-light">
             <Check className="w-6 h-6 text-green-light" />
             <span className="text-xl leading-[1.375rem] font-bold text-green-light">
-              3
+              {answersCorrect}
             </span>
           </div>
         </div>
-        {questions?.map((question, index) => {
+        {questions?.map((question) => {
           return (
             <>
               <div
@@ -60,26 +84,35 @@ export function Main() {
               <div className="w-full flex justify-between">
                 <Card
                   answers={question.incorrect_answers?.answers_a as string}
+                  onClick={() =>
+                    handleCorrectAnswer(question.incorrect_answers?.answers_a)
+                  }
                 />
                 <Card
                   answers={question.incorrect_answers?.answers_b as string}
+                  onClick={() =>
+                    handleCorrectAnswer(question.incorrect_answers?.answers_b)
+                  }
                 />
                 <Card
                   answers={question.incorrect_answers?.answers_c as string}
+                  onClick={() =>
+                    handleCorrectAnswer(question.incorrect_answers?.answers_c)
+                  }
                 />
               </div>
               <div className="w-full flex justify-between items-center px-1">
                 <span className="text-xs leading-[0.825rem] tracking-[0.225rem] font-bold text-gray-1">
                   <span className="text-xl leading-[1.375rem] font-bold">
-                    {index + 1}
+                    {numberQuestions}
                   </span>
-                  /{questions.length}
+                  /{allQuestions?.length}
                 </span>
                 <button
-                  disabled
-                  className="w-12 h-12 bg-gray-3 flex justify-center items-center rounded-[1.688rem]"
+                  disabled={disabled}
+                  className="w-12 h-12 bg-green-dark text-green-light flex justify-center items-center rounded-[1.688rem] disabled:bg-gray-3 disabled:text-gray-2  "
                 >
-                  <ChevronRight className="w-7 h-7 text-gray-2 " />
+                  <ChevronRight className="w-7 h-7  " />
                 </button>
               </div>
             </>
