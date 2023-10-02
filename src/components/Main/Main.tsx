@@ -16,7 +16,7 @@ interface Questions {
 
 export function Main() {
   const [questions, setQuestions] = useState<Array<Questions> | null>([])
-  const [page, setPage] = useState(1)
+  const [page, setPage] = useState(2)
   const [perPage, setPerPage] = useState(1)
 
   useEffect(() => {
