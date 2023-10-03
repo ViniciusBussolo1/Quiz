@@ -98,7 +98,7 @@ export function Main() {
                         isIncorrect === question.incorrect_answers?.answers_a
                       }
                       answers={question.incorrect_answers?.answers_a as string}
-                      className="cursor-not-allowed"
+                      className="cursor-not-allowed hover:bg-gray-6"
                       onClick={() =>
                         handleCorrectAnswer(
                           question.incorrect_answers?.answers_a,
@@ -112,6 +112,7 @@ export function Main() {
                       isIncorrect={
                         isIncorrect === question.incorrect_answers?.answers_b
                       }
+                      className="cursor-not-allowed hover:bg-gray-6"
                       answers={question.incorrect_answers?.answers_b as string}
                       onClick={() =>
                         handleCorrectAnswer(
@@ -126,6 +127,7 @@ export function Main() {
                       isIncorrect={
                         isIncorrect === question.incorrect_answers?.answers_c
                       }
+                      className="cursor-not-allowed hover:bg-gray-6"
                       answers={question.incorrect_answers?.answers_c as string}
                       onClick={() =>
                         handleCorrectAnswer(
