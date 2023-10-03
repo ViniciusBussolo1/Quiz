@@ -18,21 +18,27 @@ export function Main() {
   const [allQuestions, setAllQuestions] = useState<Array<Questions> | null>([])
   const [questions, setQuestions] = useState<Array<Questions> | null>([])
   const [answersCorrect, setAnswersCorrect] = useState(0)
-  const [numberQuestions, setNumberQuestions] = useState(1)
+  const [isCorrect, setIsCorrect] = useState<string | undefined>('')
+  const [isIncorrect, setIsIncorrect] = useState<string | undefined>('')
 
   const [page, setPage] = useState(1)
   const [perPage, setPerPage] = useState(1)
+  const [numberQuestions, setNumberQuestions] = useState(1)
 
   const [disabled, setDisabled] = useState(true)
 
   const handleCorrectAnswer = (answers: string | undefined) => {
-    const answersIsCorrect = questions?.map((question) => {
+    const answersIsCorrect = questions?.every((question) => {
       return question.corret_answers === answers
     })
 
-    if (answersIsCorrect) {
+    if (answersIsCorrect === true) {
+      setIsCorrect(answers)
       setDisabled(false)
       setAnswersCorrect(answersCorrect + 1)
+    } else {
+      setIsIncorrect(answers)
+      setDisabled(false)
     }
   }
 
@@ -81,26 +87,95 @@ export function Main() {
                   {question.question}
                 </span>
               </div>
-              <div className="w-full flex justify-between">
-                <Card
-                  answers={question.incorrect_answers?.answers_a as string}
-                  onClick={() =>
-                    handleCorrectAnswer(question.incorrect_answers?.answers_a)
-                  }
-                />
-                <Card
-                  answers={question.incorrect_answers?.answers_b as string}
-                  onClick={() =>
-                    handleCorrectAnswer(question.incorrect_answers?.answers_b)
-                  }
-                />
-                <Card
-                  answers={question.incorrect_answers?.answers_c as string}
-                  onClick={() =>
-                    handleCorrectAnswer(question.incorrect_answers?.answers_c)
-                  }
-                />
-              </div>
+              {isCorrect || isIncorrect ? (
+                <>
+                  <div className="w-full flex justify-between">
+                    <Card
+                      isCorrect={
+                        isCorrect === question.incorrect_answers?.answers_a
+                      }
+                      isIncorrect={
+                        isIncorrect === question.incorrect_answers?.answers_a
+                      }
+                      answers={question.incorrect_answers?.answers_a as string}
+                      className="cursor-not-allowed"
+                      onClick={() =>
+                        handleCorrectAnswer(
+                          question.incorrect_answers?.answers_a,
+                        )
+                      }
+                    />
+                    <Card
+                      isCorrect={
+                        isCorrect === question.incorrect_answers?.answers_b
+                      }
+                      isIncorrect={
+                        isIncorrect === question.incorrect_answers?.answers_b
+                      }
+                      answers={question.incorrect_answers?.answers_b as string}
+                      onClick={() =>
+                        handleCorrectAnswer(
+                          question.incorrect_answers?.answers_b,
+                        )
+                      }
+                    />
+                    <Card
+                      isCorrect={
+                        isCorrect === question.incorrect_answers?.answers_c
+                      }
+                      isIncorrect={
+                        isIncorrect === question.incorrect_answers?.answers_c
+                      }
+                      answers={question.incorrect_answers?.answers_c as string}
+                      onClick={() =>
+                        handleCorrectAnswer(
+                          question.incorrect_answers?.answers_c,
+                        )
+                      }
+                    />
+                  </div>
+                </>
+              ) : (
+                <div className="w-full flex justify-between">
+                  <Card
+                    isCorrect={
+                      isCorrect === question.incorrect_answers?.answers_a
+                    }
+                    isIncorrect={
+                      isIncorrect === question.incorrect_answers?.answers_a
+                    }
+                    answers={question.incorrect_answers?.answers_a as string}
+                    onClick={() =>
+                      handleCorrectAnswer(question.incorrect_answers?.answers_a)
+                    }
+                  />
+                  <Card
+                    isCorrect={
+                      isCorrect === question.incorrect_answers?.answers_b
+                    }
+                    isIncorrect={
+                      isIncorrect === question.incorrect_answers?.answers_b
+                    }
+                    answers={question.incorrect_answers?.answers_b as string}
+                    onClick={() =>
+                      handleCorrectAnswer(question.incorrect_answers?.answers_b)
+                    }
+                  />
+                  <Card
+                    isCorrect={
+                      isCorrect === question.incorrect_answers?.answers_c
+                    }
+                    isIncorrect={
+                      isIncorrect === question.incorrect_answers?.answers_c
+                    }
+                    answers={question.incorrect_answers?.answers_c as string}
+                    onClick={() =>
+                      handleCorrectAnswer(question.incorrect_answers?.answers_c)
+                    }
+                  />
+                </div>
+              )}
+
               <div className="w-full flex justify-between items-center px-1">
                 <span className="text-xs leading-[0.825rem] tracking-[0.225rem] font-bold text-gray-1">
                   <span className="text-xl leading-[1.375rem] font-bold">
