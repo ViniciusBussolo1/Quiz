@@ -3,8 +3,12 @@
 import { Check, ChevronRight } from 'lucide-react'
 import { Card } from '../Card/Card'
 import { useEffect, useState } from 'react'
-import supabase from '@/services/supabase'
 import { Json } from '@/services/types/db_types'
+
+import supabase from '@/services/supabase'
+import { CardSkeleton } from '../Skeletons/CardSkeleton'
+import { QuestionSkeleton } from '../Skeletons/QuestionSkeleton'
+import { NextQuestionSkeleton } from '../Skeletons/NextQuestionSkeleton'
 
 interface Questions {
   corret_answers: string | null
@@ -25,6 +29,7 @@ export function Main() {
   const [perPage, setPerPage] = useState(1)
   const [numberQuestions, setNumberQuestions] = useState(1)
   const [quizFinished, setQuizFinished] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
 
   const [disabled, setDisabled] = useState(true)
 
@@ -68,6 +73,7 @@ export function Main() {
         .range((page - 1) * perPage, page * perPage - 1)
 
       setQuestions(data)
+      setIsLoading(false)
     }
 
     const fetchAllQuestions = async () => {
@@ -96,147 +102,171 @@ export function Main() {
                 </span>
               </div>
             </div>
-            {questions?.map((question) => {
-              return (
-                <>
-                  <div
-                    key={question.id}
-                    className="w-full h-[3.625rem] flex justify-center"
-                  >
-                    <span className="max-w-[25.848rem] w-full text-center text-2xl leading-[1.8rem] font-bold text-gray-1">
-                      {question.question}
-                    </span>
+            {isLoading && (
+              <>
+                <div className="flex flex-col gap-14">
+                  <QuestionSkeleton />
+                  <div className="w-full flex justify-between">
+                    <CardSkeleton cards={3} />
                   </div>
-                  {isCorrect || isIncorrect ? (
+                  <NextQuestionSkeleton />
+                </div>
+              </>
+            )}
+            {!isLoading && (
+              <>
+                {questions?.map((question) => {
+                  return (
                     <>
-                      <div className="w-full flex justify-between">
-                        <Card
-                          isCorrect={
-                            isCorrect === question.incorrect_answers?.answers_a
-                          }
-                          isIncorrect={
-                            isIncorrect ===
-                            question.incorrect_answers?.answers_a
-                          }
-                          answers={
-                            question.incorrect_answers?.answers_a as string
-                          }
-                          className="cursor-not-allowed hover:bg-gray-6"
-                          onClick={() =>
-                            handleCorrectAnswer(
-                              question.incorrect_answers?.answers_a,
-                            )
-                          }
-                        />
-                        <Card
-                          isCorrect={
-                            isCorrect === question.incorrect_answers?.answers_b
-                          }
-                          isIncorrect={
-                            isIncorrect ===
-                            question.incorrect_answers?.answers_b
-                          }
-                          className="cursor-not-allowed hover:bg-gray-6"
-                          answers={
-                            question.incorrect_answers?.answers_b as string
-                          }
-                          onClick={() =>
-                            handleCorrectAnswer(
-                              question.incorrect_answers?.answers_b,
-                            )
-                          }
-                        />
-                        <Card
-                          isCorrect={
-                            isCorrect === question.incorrect_answers?.answers_c
-                          }
-                          isIncorrect={
-                            isIncorrect ===
-                            question.incorrect_answers?.answers_c
-                          }
-                          className="cursor-not-allowed hover:bg-gray-6"
-                          answers={
-                            question.incorrect_answers?.answers_c as string
-                          }
-                          onClick={() =>
-                            handleCorrectAnswer(
-                              question.incorrect_answers?.answers_c,
-                            )
-                          }
-                        />
+                      <div
+                        key={question.id}
+                        className="w-full h-[3.625rem] flex justify-center"
+                      >
+                        <span className="max-w-[25.848rem] w-full text-center text-2xl leading-[1.8rem] font-bold text-gray-1">
+                          {question.question}
+                        </span>
+                      </div>
+                      {isCorrect || isIncorrect ? (
+                        <>
+                          <div className="w-full flex justify-between">
+                            <Card
+                              isCorrect={
+                                isCorrect ===
+                                question.incorrect_answers?.answers_a
+                              }
+                              isIncorrect={
+                                isIncorrect ===
+                                question.incorrect_answers?.answers_a
+                              }
+                              answers={
+                                question.incorrect_answers?.answers_a as string
+                              }
+                              className="cursor-not-allowed hover:bg-gray-6"
+                              onClick={() =>
+                                handleCorrectAnswer(
+                                  question.incorrect_answers?.answers_a,
+                                )
+                              }
+                            />
+                            <Card
+                              isCorrect={
+                                isCorrect ===
+                                question.incorrect_answers?.answers_b
+                              }
+                              isIncorrect={
+                                isIncorrect ===
+                                question.incorrect_answers?.answers_b
+                              }
+                              className="cursor-not-allowed hover:bg-gray-6"
+                              answers={
+                                question.incorrect_answers?.answers_b as string
+                              }
+                              onClick={() =>
+                                handleCorrectAnswer(
+                                  question.incorrect_answers?.answers_b,
+                                )
+                              }
+                            />
+                            <Card
+                              isCorrect={
+                                isCorrect ===
+                                question.incorrect_answers?.answers_c
+                              }
+                              isIncorrect={
+                                isIncorrect ===
+                                question.incorrect_answers?.answers_c
+                              }
+                              className="cursor-not-allowed hover:bg-gray-6"
+                              answers={
+                                question.incorrect_answers?.answers_c as string
+                              }
+                              onClick={() =>
+                                handleCorrectAnswer(
+                                  question.incorrect_answers?.answers_c,
+                                )
+                              }
+                            />
+                          </div>
+                        </>
+                      ) : (
+                        <div className="w-full flex justify-between">
+                          <Card
+                            isCorrect={
+                              isCorrect ===
+                              question.incorrect_answers?.answers_a
+                            }
+                            isIncorrect={
+                              isIncorrect ===
+                              question.incorrect_answers?.answers_a
+                            }
+                            answers={
+                              question.incorrect_answers?.answers_a as string
+                            }
+                            onClick={() =>
+                              handleCorrectAnswer(
+                                question.incorrect_answers?.answers_a,
+                              )
+                            }
+                          />
+                          <Card
+                            isCorrect={
+                              isCorrect ===
+                              question.incorrect_answers?.answers_b
+                            }
+                            isIncorrect={
+                              isIncorrect ===
+                              question.incorrect_answers?.answers_b
+                            }
+                            answers={
+                              question.incorrect_answers?.answers_b as string
+                            }
+                            onClick={() =>
+                              handleCorrectAnswer(
+                                question.incorrect_answers?.answers_b,
+                              )
+                            }
+                          />
+                          <Card
+                            isCorrect={
+                              isCorrect ===
+                              question.incorrect_answers?.answers_c
+                            }
+                            isIncorrect={
+                              isIncorrect ===
+                              question.incorrect_answers?.answers_c
+                            }
+                            answers={
+                              question.incorrect_answers?.answers_c as string
+                            }
+                            onClick={() =>
+                              handleCorrectAnswer(
+                                question.incorrect_answers?.answers_c,
+                              )
+                            }
+                          />
+                        </div>
+                      )}
+
+                      <div className="w-full flex justify-between items-center px-1">
+                        <span className="text-xs leading-[0.825rem] tracking-[0.225rem] font-bold text-gray-1">
+                          <span className="text-xl leading-[1.375rem] font-bold">
+                            {numberQuestions}
+                          </span>
+                          /{allQuestions?.length}
+                        </span>
+                        <button
+                          disabled={disabled}
+                          className="w-12 h-12 bg-green-dark text-green-light flex justify-center items-center rounded-[1.688rem] disabled:bg-gray-3 disabled:text-gray-2"
+                          onClick={handleNextQuestion}
+                        >
+                          <ChevronRight className="w-7 h-7  " />
+                        </button>
                       </div>
                     </>
-                  ) : (
-                    <div className="w-full flex justify-between">
-                      <Card
-                        isCorrect={
-                          isCorrect === question.incorrect_answers?.answers_a
-                        }
-                        isIncorrect={
-                          isIncorrect === question.incorrect_answers?.answers_a
-                        }
-                        answers={
-                          question.incorrect_answers?.answers_a as string
-                        }
-                        onClick={() =>
-                          handleCorrectAnswer(
-                            question.incorrect_answers?.answers_a,
-                          )
-                        }
-                      />
-                      <Card
-                        isCorrect={
-                          isCorrect === question.incorrect_answers?.answers_b
-                        }
-                        isIncorrect={
-                          isIncorrect === question.incorrect_answers?.answers_b
-                        }
-                        answers={
-                          question.incorrect_answers?.answers_b as string
-                        }
-                        onClick={() =>
-                          handleCorrectAnswer(
-                            question.incorrect_answers?.answers_b,
-                          )
-                        }
-                      />
-                      <Card
-                        isCorrect={
-                          isCorrect === question.incorrect_answers?.answers_c
-                        }
-                        isIncorrect={
-                          isIncorrect === question.incorrect_answers?.answers_c
-                        }
-                        answers={
-                          question.incorrect_answers?.answers_c as string
-                        }
-                        onClick={() =>
-                          handleCorrectAnswer(
-                            question.incorrect_answers?.answers_c,
-                          )
-                        }
-                      />
-                    </div>
-                  )}
-
-                  <div className="w-full flex justify-between items-center px-1">
-                    <span className="text-xs leading-[0.825rem] tracking-[0.225rem] font-bold text-gray-1">
-                      <span className="text-xl leading-[1.375rem] font-bold">
-                        {numberQuestions}
-                      </span>
-                      /{allQuestions?.length}
-                    </span>
-                    <button
-                      disabled={disabled}
-                      className="w-12 h-12 bg-green-dark text-green-light flex justify-center items-center rounded-[1.688rem] disabled:bg-gray-3 disabled:text-gray-2"
-                      onClick={handleNextQuestion}
-                    >
-                      <ChevronRight className="w-7 h-7  " />
-                    </button>
-                  </div>
-                </>
-              )
-            })}
+                  )
+                })}
+              </>
+            )}
           </div>
         </div>
       ) : (

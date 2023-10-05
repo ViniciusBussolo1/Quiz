@@ -73,7 +73,7 @@ export function Card({
           <div className="w-6 h-6 rounded-[1.688rem] border-[0.188rem] border-gray-2 absolute top-[0.813rem] left-[12.813rem]"></div>
           <div className="h-full flex justify-center items-center">
             {typeof answers === 'string' && answers.includes('https') ? (
-              <Image src={answers} alt="Image Flag" width={260} height={260} />
+              <Image src={answers} alt="Image Flag" width={180} height={120} />
             ) : (
               <span className="text-lg leading-[1.1rem] text-gray-1 text-center">
                 {answers as string}

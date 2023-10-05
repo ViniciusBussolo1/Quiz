@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Sora } from 'next/font/google'
 import { ReactQueryProvider } from './ReactQueryProvider'
+import { SkeletonTheme } from 'react-loading-skeleton'
 
 import './globals.css'
 
@@ -18,9 +19,11 @@ export default function RootLayout({
 }) {
   return (
     <ReactQueryProvider>
-      <html lang="en">
-        <body className={sora.className}>{children}</body>
-      </html>
+      <SkeletonTheme baseColor="#1D2330" highlightColor="#252C3A">
+        <html lang="en">
+          <body className={sora.className}>{children}</body>
+        </html>
+      </SkeletonTheme>
     </ReactQueryProvider>
   )
 }
